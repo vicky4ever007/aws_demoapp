@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: latest
+    commands:
+      - echo "installing something"
+
+  pre_build:
+    commands:
+      - echo "we are in the pre build phase"
+
+  build:
+    commands:
+      - echo "we are in the build block"
+      - echo "we will run some tests"
+      - mkdir -p build_output
+      - grep -Fq "Congratulations" index.html
+
+  post_build:
+    commands:
+      - echo "Uploading artifacts to S3..."
+      - aws s3 cp build_output/ s3://new-cb-bucket-1b/build-artifacts/ --recursive
+      - pwd
+      - ls
+
+artifacts:
+  files:
+    - '**/*'
